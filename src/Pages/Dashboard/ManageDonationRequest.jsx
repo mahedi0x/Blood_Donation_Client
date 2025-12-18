@@ -140,66 +140,7 @@ const ManageDonationRequest = () => {
       </div>
     </div>
 
-    // ------------
-    // <div>
-    //   <h2 className="text-2xl font-semibold mb-4">Edit Donation Request</h2>
-    //   {/* --------------------------------------------- */}
-    //   <form
-    //     onSubmit={handleSubmit(onSubmit)}
-    //     className="flex items-center justify-center"
-    //   >
-    //     <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-    //       {/* recipientName */}
-    //       <label className="label">recipientName</label>
-    //       <input
-    //         type="text"
-    //         defaultValue={recipientName}
-    //         {...register("recipientName")}
-    //         className="input"
-    //         placeholder="recipientName"
-    //       />
-    //       {/* recipientDistrict */}
-    //       <label className="label">recipientDistrict</label>
-    //       <input
-    //         type="text"
-    //         defaultValue={recipientDistrict}
-    //         {...register("recipientDistrict")}
-    //         className="input"
-    //         placeholder="recipientDistrict"
-    //       />
-    //       {/* recipientUpazila */}
-    //       <label className="label">recipientUpazila</label>
-    //       <input
-    //         type="text"
-    //         defaultValue={recipientUpazila}
-    //         {...register("recipientUpazila")}
-    //         className="input"
-    //         placeholder="recipientUpazila"
-    //       />
 
-    //       {/* hospitalName */}
-    //       <label className="label">hospitalName</label>
-    //       <input
-    //         type="text"
-    //         defaultValue={hospitalName}
-    //         {...register("hospitalName")}
-    //         className="input"
-    //         placeholder="hospitalName"
-    //       />
-    //       {/* fullAddress */}
-    //       <label className="label">fullAddress</label>
-    //       <input
-    //         type="text"
-    //         defaultValue={fullAddress}
-    //         {...register("fullAddress")}
-    //         className="input"
-    //         placeholder="fullAddress"
-    //       />
-
-    //       <button className="btn btn-neutral mt-4">Submit</button>
-    //     </fieldset>
-    //   </form>
-    // </div>
   );
 };
 
