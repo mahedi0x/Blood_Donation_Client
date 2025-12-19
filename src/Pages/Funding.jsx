@@ -1,35 +1,51 @@
-import React from 'react';
 import React, { useRef, useState } from "react";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import useAuth from "../Hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
 
 const Funding = () => {
-    const { user } = useAuth();
-    const axiosSecure = useAxiosSecure();
-    const modalRef = useRef();
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const modalRef = useRef();
 
+  const [totalRequest, setTotalRequest] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const limit = 12;
 
-    const handlePayment = (e) => {
-        e.preventDefault();
-        const amount = e.target.amount.value;
-    
-        const paymentInfo = {
-          senderName: user?.displayName,
-          senderEmail: user?.email,
-          amount: Number(amount),
-          parcelName: "Funding Amount",
-        };
-    
-        axiosSecure.post("/create-checkout-session", paymentInfo).then((res) => {
-          window.location.assign(res.data.url);
-        });
-      };
+  const { data: payments = [] } = useQuery({
+    queryKey: ["all-payments", currentPage],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/all-payments?limit=${limit}&skip=${currentPage * limit}`
+      );
+      setTotalRequest(res.data.total);
+      const page = Math.ceil(res.data.total / limit);
+      setTotalPage(page);
+      return res.data.data;
+    },
+  });
 
-      
+  console.log(totalRequest);
 
-    return (
-        <div className="max-w-7xl mx-auto">
+  const handlePayment = (e) => {
+    e.preventDefault();
+    const amount = e.target.amount.value;
+
+    const paymentInfo = {
+      senderName: user?.displayName,
+      senderEmail: user?.email,
+      amount: Number(amount),
+      parcelName: "Funding Amount",
+    };
+
+    axiosSecure.post("/create-checkout-session", paymentInfo).then((res) => {
+      window.location.assign(res.data.url);
+    });
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto">
       <h1 className="text-5xl font-medium text-center text-red-400 py-2">
         Funding History
       </h1>
@@ -121,7 +137,7 @@ const Funding = () => {
         </div>
       </dialog>
     </div>
-    );
+  );
 };
 
 export default Funding;
