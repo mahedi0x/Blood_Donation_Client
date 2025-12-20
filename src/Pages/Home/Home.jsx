@@ -6,7 +6,7 @@ import ContactUs from "../../Components/ContactUs";
 const Home = () => {
   return (
     <div>
-      {/* <Banner></Banner> */}
+      <Banner></Banner>
       <Featured></Featured>
       <ContactUs></ContactUs>
     </div>
