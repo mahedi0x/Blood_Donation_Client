@@ -22,6 +22,7 @@ import PaymentSuccess from "../Pages/Payment/PaymentSuccess";
 import PaymentCancelled from "../Pages/Payment/PaymentCancelled";
 import PaymentLayout from "../Layouts/PaymentLayout";
 import RootLayout from "../Layouts/RootLayout";
+import Loader from "../Components/Loader";
 
 export const router = createBrowserRouter([
   {
@@ -66,8 +67,13 @@ export const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    Component: DashboardLayout,
-    hydrateFallbackElement: <div>Loading...</div>,
+    element: 
+    <PrivateRoute>
+    <DashboardLayout></DashboardLayout>
+    </PrivateRoute>,
+
+
+    hydrateFallbackElement: <div><Loader></Loader></div>,
     children: [
       { index: true, Component: Dashboard },
       {

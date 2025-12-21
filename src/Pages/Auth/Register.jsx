@@ -5,7 +5,10 @@ import axios from "axios";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import useAuth from "../../Hooks/useAuth";
 import { toast } from "react-toastify";
-import { User, Mail, MapPin, Map as MapIcon, Lock, RotateCcw, Camera, ChevronDown } from "lucide-react";
+import { 
+  User, Mail, MapPin, Map as MapIcon, 
+  Lock, RotateCcw, Camera, ChevronDown, Phone 
+} from "lucide-react";
 
 const Register = () => {
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm();
@@ -17,7 +20,6 @@ const Register = () => {
   const axiosSecure = useAxiosSecure();
   const realData = useLoaderData();
 
-  // Watch fields for logic
   const selectedDistrict = useWatch({ control, name: "district" });
   const selectedBloodGroup = useWatch({ control, name: "bloodGroup" });
 
@@ -33,7 +35,6 @@ const Register = () => {
     return districtUpazilas.map((u) => u.name);
   };
 
-  // Image Preview Handler
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -63,9 +64,12 @@ const Register = () => {
             displayName: data.name,
             photoURL,
             email: data.email,
+            phoneNumber: data.phone,
+            gender: data.gender, // Added gender to database object
             bloodGroup: data.bloodGroup,
             district: districtName.name,
             upazila: data.upazila,
+            role: "donor",
             status: "active",
           };
 
@@ -94,7 +98,6 @@ const Register = () => {
     <div className="min-h-screen bg-gray-50 px-4 sm:px-6 lg:px-8 font-sans py-10">
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         
-        {/* Header Section */}
         <div className="pt-10 pb-6 text-center px-4">
           <h1 className="text-3xl md:text-4xl font-extrabold text-[#df353d] mb-2">
             Join the Lifesaving Community
@@ -106,14 +109,13 @@ const Register = () => {
 
         <form onSubmit={handleSubmit(handleRegister)} className="px-6 md:px-12 pb-12 space-y-8">
           
-          {/* Profile Photo Upload */}
           <div className="flex flex-col items-center justify-center space-y-3">
             <div className="relative group">
               <div className="w-32 h-32 rounded-full bg-orange-50 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
                 {preview ? (
                   <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-12 h-16 bg-white border-2 border-gray-200 rounded-sm"></div>
+                  <User size={48} className="text-gray-300" />
                 )}
               </div>
               <label className="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-lg border border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors">
@@ -127,7 +129,6 @@ const Register = () => {
             </div>
             <div className="text-center">
               <h3 className="font-bold text-gray-800">Profile Photo</h3>
-              <p className="text-xs text-gray-400">Upload via ImageBB</p>
               {errors.photo && <p className="text-red-500 text-xs mt-1">Photo is required</p>}
             </div>
           </div>
@@ -160,6 +161,40 @@ const Register = () => {
                 />
               </div>
               {errors.email && <p className="text-red-500 text-xs">Email is required</p>}
+            </div>
+
+            {/* Phone Number */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Phone Number</label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="tel"
+                  {...register("phone", { required: "Phone number is required" })}
+                  placeholder="+880 1XXX XXXXXX"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-100 focus:border-red-400 outline-none transition-all"
+                />
+              </div>
+              {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
+            </div>
+
+            {/* Gender - NEW FIELD */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">Gender</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                <select
+                  {...register("gender", { required: "Gender is required" })}
+                  className="w-full pl-10 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-red-100 focus:border-red-400 outline-none appearance-none transition-all"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+              </div>
+              {errors.gender && <p className="text-red-500 text-xs">{errors.gender.message}</p>}
             </div>
 
             {/* District */}
@@ -250,7 +285,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="pt-4">
             <button
               type="submit"
@@ -267,7 +301,6 @@ const Register = () => {
           </div>
         </form>
 
-        {/* Footer Disclaimer */}
         <div className="bg-gray-50 px-8 py-6 text-center border-t border-gray-100">
           <p className="text-xs text-gray-400 leading-relaxed max-w-md mx-auto">
             By registering, you agree to become part of the active donor pool. Your information will be shared with verified recipients only.

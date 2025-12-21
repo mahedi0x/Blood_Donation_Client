@@ -62,16 +62,16 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8 font-sans mb-0">
+    <div className="min-h-screen  py-2 px-4 md:px-8 font-sans mb-0">
       
 <div className="max-w-5xl mx-auto my-2">
 <div className="p-6 md:p-8 rounded-3xl ">
-  <div className="flex-col md:flex-row md:items-center md:justify-between gap-8">
+  <div className="flex-col flex md:flex-row md:items-center md:justify-between gap-8">
     
     {/* Title & Description - Centered on mobile, left-aligned on desktop */}
-    <div className="text-center md:text-left flex-1 flex justify-center">
+    <div className="text-start md:text-left flex-1 flex justify-start ps-10">
       <div className="">
-      <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter">
+      <h1 className="text-3xl md:text-4xl lg:text-4xl font-black text-gray-900 tracking-tighter">
         Profile <span className="text-[#ef233c]">Settings</span>
       </h1>
       <p className="mt-3 text-gray-500 font-medium text-base md:text-lg">
@@ -111,17 +111,17 @@ const ProfilePage = () => {
   </div>
 </div>
 </div>
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-10">
         
        
 
         {/* 2. Banner & Identity Area */}
-        <div className="relative">
-          <div className="h-32 md:h-44 bg-[#3b020d] relative overflow-hidden">
+        <div className="relative ">
+          <div className="h-32 md:h-44 bg-[#3b020d] relative overflow-hidden ">
              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
           </div>
           
-          <div className="px-6 md:px-12 -mt-12 md:-mt-20 flex flex-col md:flex-row items-end md:items-center gap-6 relative z-10 ">
+          <div className="px-2 md:px-10 -mt-12 md:-mt-20 flex flex-col md:flex-row items-end md:items-center gap-6 relative z-10 ">
             <div className="relative">
               <div className="w-24 h-24 md:w-36 md:h-36 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200">
                 <img src={userData?.photoURL} alt="avatar" className="w-full h-full object-cover" />
@@ -148,7 +148,7 @@ const ProfilePage = () => {
         </div>
 
         {/* 3. Form Section */}
-        <form className="p-6 md:p-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <form className="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
           
           <div className="lg:col-span-2 space-y-10">
             <section>
@@ -225,9 +225,7 @@ const ProfilePage = () => {
               {/* Status Logic */}
               <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
                 <div className="flex items-start gap-4">
-                  <div className={`mt-1 w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${userData?.status === 'active' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}`}>
-                    {userData?.status === 'active' ? <CheckCircle2 size={22} /> : <XCircle size={22} />}
-                  </div>
+                
                   <div>
                     <h4 className="font-black text-gray-900 mb-1">{userData?.status === 'active' ? 'Eligible to Donate' : 'Account Blocked'}</h4>
                     <p className="text-xs text-gray-500 leading-relaxed font-medium">

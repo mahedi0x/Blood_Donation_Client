@@ -4,12 +4,26 @@ import { useLoaderData } from "react-router";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { toast } from "react-toastify";
+import { 
+  User, 
+  Mail, 
+  MapPin, 
+  Hospital, 
+  Calendar, 
+  Clock, 
+  MessageSquare, 
+  Droplet, 
+  ChevronDown,
+  Info
+} from "lucide-react";
 
 const CreateDonationRequest = () => {
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
   const { user } = useAuth();
-  // console.log("user--------", user);
   const axiosSecure = useAxiosSecure();
+  const realData = useLoaderData();
+  const [upazilas, setUpazilas] = useState([]);
+
   const {
     register,
     handleSubmit,
@@ -17,17 +31,13 @@ const CreateDonationRequest = () => {
     formState: { errors },
     reset,
   } = useForm();
-  const realData = useLoaderData();
 
-  const [upazilas, setUpazilas] = useState([]);
+  console.log(errors)
 
   useEffect(() => {
     fetch("/upazilas.json")
       .then((res) => res.json())
-      .then((data) => {
-        // console.log("upazila data", data);
-        setUpazilas(data); //upazilas একটি array
-      })
+      .then((data) => setUpazilas(data))
       .catch((err) => console.log(err));
   }, []);
 
@@ -37,12 +47,10 @@ const CreateDonationRequest = () => {
     const districtUpazilas = upazilas.filter(
       (u) => u.district_id === districtId
     );
-    const upazilasName = districtUpazilas.map((u) => u.name);
-    return upazilasName;
+    return districtUpazilas.map((u) => u.name);
   };
 
   const onSubmit = (data) => {
-    // get district name from id (important)
     const districtName = realData.find((d) => d.id === data.recipientDistrict);
 
     const requestData = {
@@ -63,388 +71,185 @@ const CreateDonationRequest = () => {
     axiosSecure
       .post("/donation-requests?status=active", requestData)
       .then((res) => {
-        try {
-          if (res.data.insertedId) {
-            toast.success("donation request create successfully");
-            reset();
-          }
-        } catch (error) {
-          const message = error.response?.data?.message; //alert কাজ করতেছে না
-          toast.error(message);
+        if (res.data.insertedId) {
+          toast.success("Donation request created successfully!");
+          reset();
         }
+      })
+      .catch((error) => {
+        const message = error.response?.data?.message || "Something went wrong";
+        toast.error(message);
       });
   };
 
   return (
-    <div className="bg-gray-500">
-      <div className="max-w-7xl mx-auto px-4 py-6 bg-gray-500">
-        <div className="bg-white shadow-md rounded-lg p-6 ">
-          <h2 className="text-red-400 text-3xl font-bold mb-6 text-center md:text-left">
-            Make a New Request
-          </h2>
-
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6 p-5"
-          >
-            {/* Requester Name */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Requester Name</label>
-              <input
-                type="text"
-                value={user?.displayName}
-                readOnly
-                className=" bg-gray-300 p-2 rounded-md bg-gray-100"
-              />
-            </div>
-
-            {/* Requester Email */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Requester Email</label>
-              <input
-                type="email"
-                value={user?.email}
-                readOnly
-                className=" bg-gray-300 p-2 rounded-md bg-gray-100"
-              />
-            </div>
-
-            {/* Recipient Name */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Recipient Name</label>
-              <input
-                type="text"
-                {...register("recipientName", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-                placeholder="Recipient Name"
-              />
-              {errors.recipientName && (
-                <p className="text-red-500 text-sm mt-1">Recipient Name</p>
-              )}
-            </div>
-
-            {/* Blood Group */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Blood Group</label>
-              <select
-                {...register("bloodGroup", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-              >
-                <option value="">Select Blood Group</option>
-                {bloodGroups.map((bg, i) => (
-                  <option key={i} value={bg}>
-                    {bg}
-                  </option>
-                ))}
-              </select>
-              {errors.bloodGroup && (
-                <p className="text-red-500 text-sm mt-1">Blood Group Require</p>
-              )}
-            </div>
-
-            {/* Recipient District */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Recipient District</label>
-              <select
-                {...register("recipientDistrict", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-                defaultValue="pick a District"
-              >
-                <option disabled value="pick a District">
-                  Select District
-                </option>
-                {realData.map((d, i) => (
-                  <option key={i} value={d.id}>
-                    {d.name}
-                  </option>
-                ))}
-              </select>
-              {errors.recipientDistrict && (
-                <p className="text-red-500 text-sm mt-1">Select District</p>
-              )}
-            </div>
-
-            {/* Recipient Upazila */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Recipient Upazila</label>
-              <select
-                {...register("recipientUpazila", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-                defaultValue="Pick a Upazila"
-              >
-                <option value="pick a Upazila">Select Recipient Upazila</option>
-                {upazilaByDistrictId(selectedDistrict).map((u, i) => (
-                  <option key={i} value={u}>
-                    {u}
-                  </option>
-                ))}
-              </select>
-              {errors.recipientUpazila && (
-                <p className="text-red-500 text-sm mt-1">
-                  Select Recipient Upazila
-                </p>
-              )}
-            </div>
-
-            {/* Donation Date */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Donation Date</label>
-              <input
-                type="date"
-                {...register("donationDate", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-              />
-              {errors.donationDate && (
-                <p className="text-red-500 text-sm mt-1">donationDate</p>
-              )}
-            </div>
-
-            {/* Donation Time */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Donation Time</label>
-              <input
-                type="time"
-                {...register("donationTime", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-              />
-              {errors.donationTime && (
-                <p className="text-red-500 text-sm mt-1">donationTime</p>
-              )}
-            </div>
-
-            {/* Hospital Name */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Hospital Name</label>
-              <input
-                type="text"
-                {...register("hospitalName", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-              />
-              {errors.hospitalName && (
-                <p className="text-red-500 text-sm mt-1">hospitalName</p>
-              )}
-            </div>
-
-            {/* Full Address */}
-            <div className="flex flex-col">
-              <label className="font-medium mb-1">Full Address</label>
-              <input
-                type="text"
-                {...register("fullAddress", { required: true })}
-                className=" bg-gray-300 p-2 rounded-md"
-              />
-              {errors.fullAddress && (
-                <p className="text-red-500 text-sm mt-1">fullAddress</p>
-              )}
-            </div>
-
-            {/* Request Message (Full Width) */}
-            <div className="md:col-span-2 flex flex-col">
-              <label className="font-medium mb-1">Request Message</label>
-              <textarea
-                {...register("requestMessage", { required: true })}
-                rows="4"
-                className="bg-gray-300 p-2 rounded-md"
-                placeholder="Why Need Blood?"
-              />
-              {errors.requestMessage && (
-                <p className="text-red-500 text-sm mt-1">requestMessage</p>
-              )}
-            </div>
-
-            {/* Submit Button */}
-            <div className="md:col-span-2 flex justify-center md:justify-end">
-              <button
-                type="submit"
-                className="font-semibold w-full md:w-auto bg-red-700 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
-              >
-                Make A Donation Request
-              </button>
-            </div>
-          </form>
+    <div className="min-h-screen bg-gray-50/50 py-10 px-4 md:px-4 font-sans">
+      <div className="max-w-6xl mx-auto px-4">
+        
+        {/* Header Section */}
+        <div className="mb-10 text-center md:text-left">
+          <h1 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tight leading-none">
+            New <span className="text-[#ef233c]">Donation Request</span>
+          </h1>
+          <p className="text-gray-500 font-medium mt-3 text-lg">
+            Complete the form below to broadcast an urgent request to the donor community.
+          </p>
         </div>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          
+          {/* Section 1: Identity (Read Only) */}
+          <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-300">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2 bg-red-50 rounded-xl text-[#ef233c]"><Info size={20} /></div>
+              <h3 className="text-xl font-black text-gray-900">Requester Info</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Your Name</label>
+                <div className="flex items-center gap-3 px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-500 font-bold">
+                  <User size={18} /> {user?.displayName}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Your Email</label>
+                <div className="flex items-center gap-3 px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-gray-500 font-bold">
+                  <Mail size={18} /> {user?.email}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Patient & Medical Details */}
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-300">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2 bg-red-50 rounded-xl text-[#ef233c]"><Droplet size={20} /></div>
+              <h3 className="text-xl font-black text-gray-900">Patient Details</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Recipient Name</label>
+                <input
+                  type="text"
+                  {...register("recipientName", { required: true })}
+                  placeholder="Enter full name"
+                  className="w-full px-6 py-4 bg-white border border-gray-100 rounded-2xl font-bold text-gray-900 focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Blood Group Needed</label>
+                <div className="relative group">
+                  <select
+                    {...register("bloodGroup", { required: true })}
+                    className="w-full pl-6 pr-10 py-4 bg-white border border-gray-100 rounded-2xl font-black text-[#ef233c] outline-none focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 appearance-none cursor-pointer transition-all"
+                  >
+                    <option value="">Select Group</option>
+                    {bloodGroups.map((bg, i) => <option key={i} value={bg}>{bg}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none group-focus-within:rotate-180 transition-transform" size={18} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">District</label>
+                <div className="relative group">
+                  <select
+                    {...register("recipientDistrict", { required: true })}
+                    className="w-full pl-6 pr-10 py-4 bg-white border border-gray-100 rounded-2xl font-bold text-gray-700 outline-none focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 appearance-none cursor-pointer"
+                  >
+                    <option value="">Select District</option>
+                    {realData.map((d, i) => <option key={i} value={d.id}>{d.name}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Upazila</label>
+                <div className="relative group">
+                  <select
+                    {...register("recipientUpazila", { required: true })}
+                    className="w-full pl-6 pr-10 py-4 bg-white border border-gray-100 rounded-2xl font-bold text-gray-700 outline-none focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 appearance-none cursor-pointer"
+                  >
+                    <option value="">Select Upazila</option>
+                    {upazilaByDistrictId(selectedDistrict).map((u, i) => <option key={i} value={u}>{u}</option>)}
+                  </select>
+                  <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 3: Logistics & Timing */}
+          <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-300">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="p-2 bg-red-50 rounded-xl text-[#ef233c]"><Calendar size={20} /></div>
+              <h3 className="text-xl font-black text-gray-900">Hospital & Timing</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2"><Hospital size={12}/> Hospital Name</label>
+                <input
+                  type="text"
+                  {...register("hospitalName", { required: true })}
+                  placeholder="Enter hospital name"
+                  className="w-full px-6 py-4 border border-gray-100 rounded-2xl font-bold focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2"><MapPin size={12}/> Full Address</label>
+                <input
+                  type="text"
+                  {...register("fullAddress", { required: true })}
+                  placeholder="Street / Ward / Area"
+                  className="w-full px-6 py-4 border border-gray-100 rounded-2xl font-bold focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2"><Calendar size={12}/> Required Date</label>
+                <input
+                  type="date"
+                  {...register("donationDate", { required: true })}
+                  className="w-full px-6 py-4 border border-gray-100 rounded-2xl font-bold focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+              <div className="space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2"><Clock size={12}/> Required Time</label>
+                <input
+                  type="time"
+                  {...register("donationTime", { required: true })}
+                  className="w-full px-6 py-4 border border-gray-100 rounded-2xl font-bold focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+              <div className="md:col-span-2 space-y-2 group">
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2"><MessageSquare size={12}/> Request Message</label>
+                <textarea
+                  {...register("requestMessage", { required: true })}
+                  rows="4"
+                  placeholder="Explain why the blood is needed..."
+                  className="w-full px-6 py-4 border border-gray-100 rounded-2xl font-bold focus:border-[#ef233c] focus:ring-4 focus:ring-red-50 outline-none transition-all"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Action Button */}
+          <div className="pt-4 flex justify-center md:justify-end">
+            <button
+              type="submit"
+              className="w-full md:w-auto px-12 py-5 bg-[#ef233c] text-white font-black text-lg rounded-2xl shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95 flex items-center justify-center gap-3"
+            >
+              Create Donation Request
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
-
-  // return (
-  //   <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-md">
-  //     <h2 className="text-2xl font-bold mb-4">
-  //       নতুন ডোনেশন রিকোয়েস্ট তৈরি করুন
-  //     </h2>
-  //     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-  //       {/* Requester Name */}
-  //       <div>
-  //         <label className="block font-medium">রিকোয়েস্টার নাম</label>
-  //         <input
-  //           type="text"
-  //           value={user?.displayName}
-  //           readOnly
-  //           className="w-full border bg-gray-300 p-2 rounded-md bg-gray-100"
-  //         />
-  //       </div>
-
-  //       {/* Requester Email */}
-  //       <div>
-  //         <label className="block font-medium">রিকোয়েস্টার ইমেইল</label>
-  //         <input
-  //           type="email"
-  //           value={user?.email}
-  //           readOnly
-  //           className="w-full border bg-gray-300 p-2 rounded-md bg-gray-100"
-  //         />
-  //       </div>
-
-  //       {/* Recipient Name */}
-  //       <div>
-  //         <label className="block font-medium">প্রাপকের নাম</label>
-  //         <input
-  //           type="text"
-  //           {...register("recipientName", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         />
-  //         {errors.recipientName && (
-  //           <p className="text-red-500">প্রাপকের নাম প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Recipient District */}
-  //       <div>
-  //         <label className="block font-medium">প্রাপকের জেলা</label>
-  //         <select
-  //           {...register("recipientDistrict", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //           defaultValue="pick a District"
-  //         >
-  //           <option disabled={true} value="pick a District">
-  //             জেলা নির্বাচন করুন
-  //           </option>
-  //           {realData.map((d, i) => (
-  //             <option key={i} value={d.id}>
-  //               {d.name}
-  //             </option>
-  //           ))}
-  //         </select>
-  //         {errors.recipientDistrict && (
-  //           <p className="text-red-500">জেলা নির্বাচন করুন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Recipient Upazila */}
-  //       <div>
-  //         <label className="block font-medium">প্রাপকের উপজেলা</label>
-  //         <select
-  //           {...register("recipientUpazila", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //           defaultValue="Pick a Upazila"
-  //         >
-  //           <option value="pick a Upazila">উপজেলা নির্বাচন করুন</option>
-  //           {upazilaByDistrictId(selectedDistrict).map((u, i) => (
-  //             <option key={i} value={u}>
-  //               {u}
-  //             </option>
-  //           ))}
-  //         </select>
-  //         {errors.recipientUpazila && (
-  //           <p className="text-red-500">উপজেলা নির্বাচন করুন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Hospital Name */}
-  //       <div>
-  //         <label className="block font-medium">হাসপাতালের নাম</label>
-  //         <input
-  //           type="text"
-  //           {...register("hospitalName", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         />
-  //         {errors.hospitalName && (
-  //           <p className="text-red-500">হাসপাতালের নাম প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Full Address */}
-  //       <div>
-  //         <label className="block font-medium">পূর্ণ ঠিকানা</label>
-  //         <input
-  //           type="text"
-  //           {...register("fullAddress", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         />
-  //         {errors.fullAddress && (
-  //           <p className="text-red-500">পূর্ণ ঠিকানা প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Blood Group */}
-  //       <div>
-  //         <label className="block font-medium">রক্তের গ্রুপ</label>
-  //         <select
-  //           {...register("bloodGroup", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         >
-  //           <option value="">রক্তের গ্রুপ নির্বাচন করুন</option>
-  //           {bloodGroups.map((bg, i) => (
-  //             <option key={i} value={bg}>
-  //               {bg}
-  //             </option>
-  //           ))}
-  //         </select>
-  //         {errors.bloodGroup && (
-  //           <p className="text-red-500">রক্তের গ্রুপ প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Donation Date */}
-  //       <div>
-  //         <label className="block font-medium">ডোনেশন তারিখ</label>
-  //         <input
-  //           type="date"
-  //           {...register("donationDate", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         />
-  //         {errors.donationDate && (
-  //           <p className="text-red-500">তারিখ প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Donation Time */}
-  //       <div>
-  //         <label className="block font-medium">ডোনেশন সময়</label>
-  //         <input
-  //           type="time"
-  //           {...register("donationTime", { required: true })}
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //         />
-  //         {errors.donationTime && <p className="text-red-500">সময় প্রয়োজন।</p>}
-  //       </div>
-
-  //       {/* Request Message */}
-  //       <div>
-  //         <label className="block font-medium">রিকোয়েস্ট মেসেজ</label>
-  //         <textarea
-  //           {...register("requestMessage", { required: true })}
-  //           rows="4"
-  //           className="w-full border bg-gray-300 p-2 rounded-md"
-  //           placeholder="কেন রক্তের প্রয়োজন তা বিস্তারিত লিখুন"
-  //         ></textarea>
-  //         {errors.requestMessage && (
-  //           <p className="text-red-500">রিকোয়েস্ট মেসেজ প্রয়োজন।</p>
-  //         )}
-  //       </div>
-
-  //       {/* Submit Button */}
-  //       <div className="text-right">
-  //         <button
-  //           type="submit"
-  //           className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
-  //         >
-  //           Make A Donation Request
-  //         </button>
-  //       </div>
-  //     </form>
-  //   </div>
-  // );
 };
 
 export default CreateDonationRequest;

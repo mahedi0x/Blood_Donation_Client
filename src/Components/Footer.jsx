@@ -18,7 +18,7 @@ const Footer = () => {
               </span>
             </a>
             <p className="text-sm leading-relaxed  dark:text-gray-300 pr-4">
-              RedLove: Streamlining blood donation with easy registration,
+              BloodBridge: Streamlining blood donation with easy registration,
               login, and advanced search. Connect quickly, donate easily, save
               lives.
             </p>
@@ -178,7 +178,7 @@ const Footer = () => {
         <div className="mt-16 pt-8 border-t border-gray-300 dark:border-white/10 text-center text-xs text-white">
           <p>
             Copyright © 2025
-            <span className=" font-medium"> Soheb Akhter </span>
+            <span className=" font-medium"> Mahedi Hasn </span>
             All Rights Reserved.
           </p>
         </div>

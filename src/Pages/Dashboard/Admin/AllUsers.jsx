@@ -3,12 +3,22 @@ import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import useRole from "../../../Hooks/useRole";
+import { 
+  ShieldCheck, 
+  ShieldAlert, 
+  UserCog, 
+  UserMinus, 
+  UserPlus, 
+  MoreVertical,
+  Mail,
+  UserCheck
+} from "lucide-react";
 
 const AllUsers = () => {
-  const { role } = useRole();
+  const { role: currentUserRole } = useRole();
   const axiosSecure = useAxiosSecure();
 
-  const { data: allUser = [], refetch } = useQuery({
+  const { data: allUser = [], refetch, isLoading } = useQuery({
     queryKey: ["all-users"],
     queryFn: async () => {
       const res = await axiosSecure.get("/all-users");
@@ -16,61 +26,63 @@ const AllUsers = () => {
     },
   });
 
+  // Helper to force close DaisyUI dropdowns
+  const closeDropdown = () => {
+    const elem = document.activeElement;
+    if (elem) {
+      elem.blur();
+    }
+  };
+
   const handleBlock = (id) => {
-    // Update the user status to "blocked"
+    closeDropdown();
     const updateInfo = { status: "blocked" };
     axiosSecure.patch(`/user-status/${id}`, updateInfo).then((res) => {
       if (res.data.modifiedCount) {
-        toast.error("User marked as blocked.");
-        // Optionally, refetch the requests or update the local state
+        toast.error("User account restricted.");
         refetch();
       }
     });
   };
+
   const handleUnBlock = (id) => {
-    // Update the user status to "active"
+    closeDropdown();
     const updateInfo = { status: "active" };
     axiosSecure.patch(`/user-status/${id}`, updateInfo).then((res) => {
       if (res.data.modifiedCount) {
-        toast.success("User marked as active.");
-        // Optionally, refetch the requests or update the local state
+        toast.success("User account reactivated.");
         refetch();
       }
     });
   };
+
   const handleVolunteer = (id) => {
-    // Update the user status to "Volunteer"
+    closeDropdown();
     const updateInfo = { role: "volunteer" };
     axiosSecure.patch(`/user-role/${id}`, updateInfo).then((res) => {
       if (res.data.modifiedCount) {
-        toast.success("User marked as Volunteer.");
-        // Optionally, refetch the requests or update the local state
+        toast.success("Assigned Volunteer role.");
         refetch();
       }
     });
   };
-  const handleAdmin = (id) => {
-    // Update the user status to "Admin"
-    const updateInfo = { role: "admin" };
 
+  const handleAdmin = (id) => {
+    closeDropdown();
+    const updateInfo = { role: "admin" };
     Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
+      title: "Elevate to Admin?",
+      text: "This user will have full access to dashboard controls.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Make Admin!",
+      confirmButtonColor: "#ef233c",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Yes, make Admin!",
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure.patch(`/user-role/${id}`, updateInfo).then((res) => {
           if (res.data.modifiedCount) {
-            Swal.fire({
-              title: "Admin",
-              text: "User marked as Admin.",
-              icon: "success",
-            });
-            // Optionally, refetch the requests or update the local state
+            Swal.fire("Success", "User promoted to Admin.", "success");
             refetch();
           }
         });
@@ -78,104 +90,119 @@ const AllUsers = () => {
     });
   };
 
-  return (
-    <div>
-      {role === "admin" && (
-        <>
-          <h1 className="text-4xl text-center text-red-400 font-semibold p-5">
-            All Users
-          </h1>
+  if (isLoading) return <div className="p-10 text-center font-black text-[#ef233c]">Accessing User Registry...</div>;
 
-          <div className="overflow-x-auto">
-            <table className="table">
-              {/* head */}
-              <thead className="bg-red-400 text-white">
-                <tr>
-                  <th>#</th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody className="bg-red-100 text-lg">
-                {allUser.map((u, i) => (
-                  <tr>
-                    <th>{i + 1}</th>
-                    <td>
-                      <div className="flex items-center gap-3">
-                        <div className="avatar">
-                          <div className="mask mask-squircle h-12 w-12">
-                            <img
-                              src={u.photoURL}
-                              alt="Avatar Tailwind CSS Component"
-                            />
+  return (
+    <div className="min-h-screen bg-[#FDFDFD] py-10 px-4 md:px-8">
+      {currentUserRole === "admin" && (
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10 text-center md:text-left">
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
+              User <span className="text-[#ef233c]">Management</span>
+            </h1>
+            <p className="text-gray-500 font-medium mt-2">Oversee community roles, statuses, and permissions.</p>
+          </div>
+
+          <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-200 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-gray-50/50 border-b border-gray-50 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                    <th className="px-8 py-6">#</th>
+                    <th className="px-6 py-6">User Profile</th>
+                    <th className="px-6 py-6">Email Address</th>
+                    <th className="px-6 py-6">Current Role</th>
+                    <th className="px-6 py-6">Status</th>
+                    <th className="px-8 py-6 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {allUser.map((u, i) => (
+                    // KEY FIXED: Use u._id instead of index i
+                    <tr key={u._id} className="hover:bg-gray-50/50 transition-colors group">
+                      <td className="px-8 py-5 font-bold text-gray-300">{(i + 1).toString().padStart(2, '0')}</td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl border-2 border-white shadow-md overflow-hidden bg-gray-100">
+                            <img src={u.photoURL} alt={u.displayName} className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <div className="font-black text-gray-900 tracking-tight">{u.displayName}</div>
                           </div>
                         </div>
-                        <div>
-                          <div className="font-bold">{u.displayName}</div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className="flex items-center gap-2 text-sm font-bold text-gray-500">
+                          <Mail size={14} className="text-gray-300" />
+                          {u.email}
                         </div>
-                      </div>
-                    </td>
-                    <td>{u.email}</td>
-                    <td
-                      className={`${
-                        u.role === "admin" ? "text-green-600" : "text-blue-600"
-                      }`}
-                    >
-                      {u.role}
-                    </td>
-                    <td
-                      className={`${
-                        u.status === "active"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {u.status}
-                    </td>
-                    <th className="flex gap-1">
-                      {u.status === "active" && (
-                        <button
-                          onClick={() => handleBlock(u._id)}
-                          className="btn btn-primary btn-xs"
-                        >
-                          Block
-                        </button>
-                      )}
-                      {u.status === "blocked" && (
-                        <button
-                          onClick={() => handleUnBlock(u._id)}
-                          className="btn btn-primary btn-xs"
-                        >
-                          Unblock
-                        </button>
-                      )}
-                      {u.role === "admin" || u.role === "donor" ? (
-                        <button
-                          onClick={() => handleVolunteer(u._id)}
-                          className="btn btn-neutral btn-xs"
-                        >
-                          Make Volunteer
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            handleAdmin(u._id);
-                          }}
-                          className="btn btn-neutral btn-xs"
-                        >
-                          Make Admin
-                        </button>
-                      )}
-                    </th>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                          u.role === "admin" 
+                            ? "bg-purple-50 text-purple-600 border-purple-100" 
+                            : u.role === "volunteer" 
+                            ? "bg-blue-50 text-blue-600 border-blue-100" 
+                            : "bg-gray-50 text-gray-500 border-gray-100"
+                        }`}>
+                          {u.role}
+                        </div>
+                      </td>
+                      <td className="px-6 py-5">
+                        <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
+                          u.status === "active" 
+                            ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                            : "bg-rose-50 text-rose-600 border-rose-100"
+                        }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${u.status === "active" ? "bg-emerald-500" : "bg-rose-500"}`} />
+                          {u.status}
+                        </div>
+                      </td>
+                      <td className="px-8 py-5 text-center">
+                        <div className="dropdown dropdown-left dropdown-end">
+                          <label tabIndex={0} className="btn btn-ghost btn-xs text-gray-400 hover:text-[#ef233c]">
+                            <MoreVertical size={20} />
+                          </label>
+                          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow-2xl bg-white rounded-2xl border border-gray-50 w-52 space-y-1 mt-2">
+                            {u.status === "active" ? (
+                              <li>
+                                <button onClick={() => handleBlock(u._id)} className="flex items-center gap-3 font-bold text-rose-500 py-3">
+                                  <ShieldAlert size={16} /> Block User
+                                </button>
+                              </li>
+                            ) : (
+                              <li>
+                                <button onClick={() => handleUnBlock(u._id)} className="flex items-center gap-3 font-bold text-emerald-500 py-3">
+                                  <ShieldCheck size={16} /> Unblock User
+                                </button>
+                              </li>
+                            )}
+
+                            <li className="border-t border-gray-50 my-1 pt-1"></li>
+
+                            {u.role === "admin" || u.role === "donor" ? (
+                              <li>
+                                <button onClick={() => handleVolunteer(u._id)} className="flex items-center gap-3 font-bold text-blue-500 py-3">
+                                  <UserPlus size={16} /> Make Volunteer
+                                </button>
+                              </li>
+                            ) : (
+                              <li>
+                                <button onClick={() => handleAdmin(u._id)} className="flex items-center gap-3 font-bold text-[#ef233c] py-3">
+                                  <UserCheck size={16} /> Make Admin
+                                </button>
+                              </li>
+                            )}
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

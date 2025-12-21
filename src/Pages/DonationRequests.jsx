@@ -65,7 +65,7 @@ const DonationRequests = () => {
                   {/* 1. Dynamic Status Banner */}
                   <div className={`${theme.bg} px-8 py-4 flex justify-between items-center `}>
                     <span className={`flex items-center gap-2 h-20 text-[10px] font-black uppercase tracking-widest ${theme.text}`}>
-                      <div className={`w-2 h-2 rounded-full animate-pulse ${theme.text.replace('text', 'bg')}`} />
+                      <div className={`w-3 h-3 rounded-full animate-pulse ${theme.text.replace('text', 'bg')}`} />
                       {theme.label}
                     </span>
                   </div>
