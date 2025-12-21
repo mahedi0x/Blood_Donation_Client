@@ -20,7 +20,7 @@ const Loader = () => {
       {/* Loading Text */}
       <div className="mt-8 flex flex-col items-center">
         <h2 className="text-2xl font-black tracking-tighter text-gray-900">
-          Red<span className="text-[#ef233c]">Love</span>
+          <span className="text-[#ef233c]">Blood</span>Bridge
         </h2>
         <div className="mt-2 flex items-center gap-1">
           <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#ef233c] [animation-delay:-0.3s]"></span>
