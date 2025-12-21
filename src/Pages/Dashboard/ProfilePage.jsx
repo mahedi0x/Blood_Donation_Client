@@ -62,51 +62,54 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8 font-sans ">
-       {/* 1. Header Section */}
-       {/* 1. Header Section */}
-<div className="max-w-5xl mx-auto my-6">
-  <div className="bg-white p-4 md:p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-    <div className="space-y-1">
-      <div className="flex items-center gap-2 mb-1 ">
-        
-        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tighter">
-          Profile <span className="text-[#ef233c]">Settings</span>
-        </h1>
-      </div>
-      <p className="text-gray-500 font-medium md:text-lg">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8 font-sans mb-0">
+      
+<div className="max-w-5xl mx-auto my-2">
+<div className="p-6 md:p-8 rounded-3xl ">
+  <div className="flex-col md:flex-row md:items-center md:justify-between gap-8">
+    
+    {/* Title & Description - Centered on mobile, left-aligned on desktop */}
+    <div className="text-center md:text-left flex-1 flex justify-center">
+      <div className="">
+      <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter">
+        Profile <span className="text-[#ef233c]">Settings</span>
+      </h1>
+      <p className="mt-3 text-gray-500 font-medium text-base md:text-lg">
         Manage your personal information and donor credentials.
       </p>
+      </div>
     </div>
 
-    <div className="flex items-center gap-3 w-full md:w-auto">
+    {/* Action Buttons - Right-aligned on desktop, full-width stacked on mobile */}
+    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto justify-end mt-10">
       {!editable ? (
-        <button 
+        <button
           onClick={() => setEditable(true)}
-          className="group flex cursor-pointer flex-1 md:flex-none items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-red-50 text-[#ef233c] font-black rounded-2xl hover:bg-[#ef233c] hover:text-white hover:border-[#ef233c] transition-all duration-300 shadow-sm active:scale-95"
+          className="group flex cursor-pointer items-center justify-center gap-3 px-8 py-4 bg-white border-2 border-red-100 text-[#ef233c] font-black rounded-2xl hover:bg-[#ef233c] hover:text-white hover:border-[#ef233c] transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
         >
-          <Edit3 size={20} className="group-hover:rotate-12 transition-transform" />
+          <Edit3 size={22} className="group-hover:rotate-12 transition-transform" />
           Edit Profile
         </button>
       ) : (
-        <div className="flex gap-3 w-full md:w-auto animate-in fade-in zoom-in duration-300">
-          <button 
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-end">
+          <button
             onClick={() => setEditable(false)}
-            className="flex-1 flex cursor-pointer md:flex-none px-6 py-4 bg-gray-50 text-gray-500 font-bold rounded-2xl hover:bg-gray-100 transition-all border border-gray-200"
+            className="px-8 py-4 cursor-pointer bg-gray-50 text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-all border border-gray-200 active:scale-95"
           >
             Cancel
           </button>
-          <button 
+          <button
             onClick={handleSubmit(onSubmit)}
-            className="flex-1 flex cursor-pointer md:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
+            className="flex cursor-pointer items-center justify-center gap-3 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all duration-300 active:scale-95"
           >
-            <Save size={20} />
+            <Save size={22} />
             Save Changes
           </button>
         </div>
       )}
     </div>
   </div>
+</div>
 </div>
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         

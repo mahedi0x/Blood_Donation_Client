@@ -12,7 +12,7 @@ const Funding = () => {
   const [totalRequest, setTotalRequest] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const limit = 12;
+  const limit = 5;
 
   const { data: payments = [] } = useQuery({
     queryKey: ["all-payments", currentPage],
@@ -53,20 +53,25 @@ const Funding = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-evenly items-center mb-10 gap-6">
+        <div className="flex flex-col md:flex-row justify-center items-center mb-10 gap-6">
           <div className="text-center md:text-left items-center">
             <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight">
               Funding <span className="text-[#ef233c]">History</span>
             </h1>
             <p className="text-gray-500 font-medium mt-1">Manage and track your contributions to the community.</p>
           </div>
-          <button
+          
+        </div>
+
+        <div className="flex justify-end mb-5">
+        <button
             onClick={() => modalRef.current.showModal()}
             className="group flex items-center gap-2 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-lg shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
           >
             <CreditCard size={20} />
             Give Fund
           </button>
+
         </div>
 
         {/* Table Container */}

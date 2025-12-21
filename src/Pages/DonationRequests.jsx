@@ -14,6 +14,7 @@ const DonationRequests = () => {
       return res.data;
     },
   });
+  console.log(pendingData)
 
   if (isLoading) {
     return <Loader></Loader>;
