@@ -5,11 +5,11 @@ import Footer from "../Components/Footer";
 
 const PaymentLayout = () => {
   return (
-    <div className=" flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen ">
       <div>
         <Navbar></Navbar>
       </div>
-      <div className=" flex-1">
+      <div className=" flex-1 py-20">
         <Outlet></Outlet>
       </div>
       <Footer></Footer>

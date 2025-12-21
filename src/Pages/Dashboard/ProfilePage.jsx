@@ -62,41 +62,55 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 md:px-8 font-sans ">
+       {/* 1. Header Section */}
+       {/* 1. Header Section */}
+<div className="max-w-5xl mx-auto my-6">
+  <div className="bg-white p-4 md:p-8 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div className="space-y-1">
+      <div className="flex items-center gap-2 mb-1 ">
+        
+        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tighter">
+          Profile <span className="text-[#ef233c]">Settings</span>
+        </h1>
+      </div>
+      <p className="text-gray-500 font-medium md:text-lg">
+        Manage your personal information and donor credentials.
+      </p>
+    </div>
+
+    <div className="flex items-center gap-3 w-full md:w-auto">
+      {!editable ? (
+        <button 
+          onClick={() => setEditable(true)}
+          className="group flex cursor-pointer flex-1 md:flex-none items-center justify-center gap-2 px-8 py-4 bg-white border-2 border-red-50 text-[#ef233c] font-black rounded-2xl hover:bg-[#ef233c] hover:text-white hover:border-[#ef233c] transition-all duration-300 shadow-sm active:scale-95"
+        >
+          <Edit3 size={20} className="group-hover:rotate-12 transition-transform" />
+          Edit Profile
+        </button>
+      ) : (
+        <div className="flex gap-3 w-full md:w-auto animate-in fade-in zoom-in duration-300">
+          <button 
+            onClick={() => setEditable(false)}
+            className="flex-1 flex cursor-pointer md:flex-none px-6 py-4 bg-gray-50 text-gray-500 font-bold rounded-2xl hover:bg-gray-100 transition-all border border-gray-200"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={handleSubmit(onSubmit)}
+            className="flex-1 flex cursor-pointer md:flex-none flex items-center justify-center gap-2 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
+          >
+            <Save size={20} />
+            Save Changes
+          </button>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         
-        {/* 1. Header Section */}
-        <div className="p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">Profile Settings</h1>
-            <p className="text-gray-500 font-medium">Manage your personal information and donor status.</p>
-          </div>
-          <div className="flex gap-3">
-            {!editable ? (
-              <button 
-                onClick={() => setEditable(true)}
-                className="flex items-center gap-2 px-6 py-2.5 border-2 border-red-100 text-[#ef233c] font-bold rounded-xl hover:bg-red-50 transition-all active:scale-95"
-              >
-                <Edit3 size={18} /> Edit Profile
-              </button>
-            ) : (
-              <>
-                <button 
-                  onClick={() => setEditable(false)}
-                  className="flex items-center gap-2 px-6 py-2.5 border-2 border-gray-100 text-gray-500 font-bold rounded-xl hover:bg-gray-50 transition-all"
-                >
-                  Cancel
-                </button>
-                <button 
-                  onClick={handleSubmit(onSubmit)}
-                  className="flex items-center gap-2 px-6 py-2.5 bg-[#ef233c] text-white font-bold rounded-xl hover:bg-[#d90429] shadow-lg shadow-red-200 transition-all active:scale-95"
-                >
-                  <Save size={18} /> Save Changes
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+       
 
         {/* 2. Banner & Identity Area */}
         <div className="relative">
@@ -104,7 +118,7 @@ const ProfilePage = () => {
              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
           </div>
           
-          <div className="px-6 md:px-12 -mt-12 md:-mt-16 flex flex-col md:flex-row items-end md:items-center gap-6 relative z-10">
+          <div className="px-6 md:px-12 -mt-12 md:-mt-20 flex flex-col md:flex-row items-end md:items-center gap-6 relative z-10 ">
             <div className="relative">
               <div className="w-24 h-24 md:w-36 md:h-36 rounded-full border-4 border-white shadow-lg overflow-hidden bg-gray-200">
                 <img src={userData?.photoURL} alt="avatar" className="w-full h-full object-cover" />
@@ -113,7 +127,7 @@ const ProfilePage = () => {
             
             <div className="flex-1 pb-2">
               <div className="flex flex-wrap items-center gap-3">
-                <h2 className="text-2xl md:text-4xl font-black text-gray-600 leading-tight">{userData?.displayName}</h2>
+                <h2 className="text-2xl md:text-4xl font-black text-white leading-tight">{userData?.displayName}</h2>
                 <span className={`inline-flex items-center gap-1 px-3 py-1 text-xs font-bold rounded-full border uppercase tracking-tighter ${userData?.status === 'active' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-600 border-red-100'}`}>
                   <CheckCircle2 size={12} /> {userData?.status} Donor
                 </span>
@@ -123,8 +137,8 @@ const ProfilePage = () => {
               </div>
             </div>
 
-            <div className="bg-red-50/50 border border-red-100 rounded-2xl p-4 min-w-[120px] text-center mb-2">
-                <p className="text-[10px] font-black uppercase tracking-widest text-red-400 mb-1">Blood Group</p>
+            <div className="bg-red-50/60 border border-red-400 rounded-2xl p-4 min-w-[120px] text-center mb-2">
+                <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-1">Blood Group</p>
                 <div className="text-3xl md:text-4xl font-black text-[#ef233c]">{userData?.bloodGroup}</div>
             </div>
           </div>
@@ -223,6 +237,8 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
+
+          
         </form>
       </div>
     </div>
