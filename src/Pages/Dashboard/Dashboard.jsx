@@ -18,7 +18,10 @@ import {
   Clock, 
   MapPin, 
   Calendar,
-  MoreVertical
+  MoreVertical,
+  Users,
+  TrendingUp,
+  Droplet
 } from "lucide-react";
 import Loader from "../../Components/Loader";
 
@@ -250,31 +253,61 @@ const Dashboard = () => {
 
       {/* --- ADMIN / VOLUNTEER VIEW --- */}
       {(role === "admin" || role === "volunteer") && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="group bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:border-red-100 transition-all">
-            <div className="bg-red-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-[#ef233c] group-hover:rotate-6 transition-transform">
-              <HeartPulse size={28} />
-            </div>
-            <h2 className="text-5xl font-black text-gray-900 tracking-tight">{donors.length}</h2>
-            <h1 className="text-xs font-black text-gray-400 uppercase tracking-widest mt-2">Verified Donors</h1>
-          </div>
-
-          <div className="group bg-gray-900 p-8 rounded-[2.5rem] shadow-xl hover:-translate-y-1 transition-all">
-            <div className="bg-white/10 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-white backdrop-blur-md group-hover:rotate-6 transition-transform">
-              <CircleDollarSign size={28} />
-            </div>
-            <h2 className="text-5xl font-black text-white tracking-tight">${totalAmount}</h2>
-            <h1 className="text-xs font-black text-gray-400 uppercase tracking-widest mt-2">Total Funding</h1>
-          </div>
-
-          <div className="group bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:border-red-100 transition-all">
-            <div className="bg-red-50 w-14 h-14 rounded-2xl flex items-center justify-center mb-6 text-[#ef233c] group-hover:rotate-6 transition-transform">
-              <Syringe size={28} />
-            </div>
-            <h2 className="text-5xl font-black text-gray-900 tracking-tight">{totalReq.length}</h2>
-            <h1 className="text-xs font-black text-gray-400 uppercase tracking-widest mt-2">Total Requests</h1>
-          </div>
-        </div>
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+       {/* Total Donors Card */}
+       <div className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 relative">
+         <div className="flex justify-between items-start mb-6">
+           <div className="bg-blue-50 p-4 rounded-xl text-blue-600">
+             <Users size={24} />
+           </div>
+           <div className="flex items-center gap-1 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm font-bold">
+             <TrendingUp size={16} /> +12%
+           </div>
+         </div>
+         <div className="space-y-1">
+           <p className="text-gray-500 font-bold text-sm">Total Donors</p>
+           <h2 className="text-4xl font-black text-gray-900 tracking-tight">
+             {donors.length.toLocaleString()}
+           </h2>
+         </div>
+       </div>
+     
+       {/* Total Funding Card */}
+       <div className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 relative">
+         <div className="flex justify-between items-start mb-6">
+           <div className="bg-emerald-50 p-4 rounded-xl text-emerald-600">
+             <CircleDollarSign size={24} />
+           </div>
+           <div className="flex items-center gap-1 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm font-bold">
+             <TrendingUp size={16} /> +5%
+           </div>
+         </div>
+         <div className="space-y-1">
+           <p className="text-gray-500 font-bold text-sm">Total Funding</p>
+           <h2 className="text-4xl font-black text-gray-900 tracking-tight">
+             ${totalAmount.toLocaleString()}
+           </h2>
+         </div>
+       </div>
+     
+       {/* Blood Requests Card */}
+       <div className="bg-white p-8 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 relative">
+         <div className="flex justify-between items-start mb-6">
+           <div className="bg-red-50 p-4 rounded-xl text-[#ef233c]">
+             <Droplet size={24} fill="currentColor" />
+           </div>
+           <div className="flex items-center gap-1 bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-sm font-bold">
+             <TrendingUp size={16} /> +8%
+           </div>
+         </div>
+         <div className="space-y-1">
+           <p className="text-gray-500 font-bold text-sm">Blood Requests</p>
+           <h2 className="text-4xl font-black text-gray-900 tracking-tight">
+             {totalReq.length}
+           </h2>
+         </div>
+       </div>
+     </div>
       )}
     </div>
   );

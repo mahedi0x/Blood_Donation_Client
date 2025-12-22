@@ -13,6 +13,7 @@ import {
   Mail,
   UserCheck
 } from "lucide-react";
+import Loader from "../../../Components/Loader";
 
 const AllUsers = () => {
   const { role: currentUserRole } = useRole();
@@ -90,7 +91,7 @@ const AllUsers = () => {
     });
   };
 
-  if (isLoading) return <div className="p-10 text-center font-black text-[#ef233c]">Accessing User Registry...</div>;
+  if (isLoading) return <div className="p-10 text-center font-black text-[#ef233c]"><Loader></Loader></div>;
 
   return (
     <div className="min-h-screen bg-[#FDFDFD] py-10 px-4 md:px-8">

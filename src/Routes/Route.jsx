@@ -23,6 +23,7 @@ import PaymentCancelled from "../Pages/Payment/PaymentCancelled";
 import PaymentLayout from "../Layouts/PaymentLayout";
 import RootLayout from "../Layouts/RootLayout";
 import Loader from "../Components/Loader";
+import ErrorPage from "../Components/ErrorPage";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
         path: "donation-requests",
         Component: DonationRequests,
       },
+      {
+        path: "/*",
+        Component: ErrorPage
+      }
     ],
   },
   {
