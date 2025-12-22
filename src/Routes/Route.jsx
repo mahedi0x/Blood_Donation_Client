@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
   {
     path: "/",
     Component: RootLayout,
-    hydrateFallbackElement: <div>Loading...</div>,
+    hydrateFallbackElement: <Loader></Loader>,
     children: [
       {
         index: true,

@@ -12,7 +12,7 @@ const Funding = () => {
   const [totalRequest, setTotalRequest] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const limit = 5;
+  const limit = 10;
 
   const { data: payments = [] } = useQuery({
     queryKey: ["all-payments", currentPage],
@@ -66,7 +66,7 @@ const Funding = () => {
         <div className="flex justify-end mb-5">
         <button
             onClick={() => modalRef.current.showModal()}
-            className="group flex items-center gap-2 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-lg shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
+            className="group cursor-pointer flex items-center gap-2 px-8 py-4 bg-[#ef233c] text-white font-black rounded-2xl shadow-lg shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
           >
             <CreditCard size={20} />
             Give Fund
@@ -202,14 +202,14 @@ const Funding = () => {
                 required
               />
             </div>
-            <button type="submit" className="w-full bg-[#ef233c] text-white py-4 rounded-2xl font-black text-lg hover:bg-[#d90429] shadow-xl shadow-red-100 transition-all active:scale-95">
+            <button type="submit" className="w-full cursor-pointer bg-[#ef233c] text-white py-4 rounded-2xl font-black text-lg hover:bg-[#d90429] shadow-xl shadow-red-100 transition-all active:scale-95">
               Confirm & Pay
             </button>
           </form>
 
           <div className="mt-4">
             <form method="dialog">
-              <button className="w-full text-gray-400 font-bold text-sm hover:text-gray-600 transition-colors">Maybe later</button>
+              <button className="w-full cursor-pointer text-gray-400 font-bold text-sm hover:text-gray-600 transition-colors">Maybe later</button>
             </form>
           </div>
         </div>
