@@ -105,7 +105,7 @@ const Footer = () => {
 
           <div className="text-center md:text-right">
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-              © {currentYear} RedLove Application. Made with <Heart size={12} className="text-[#ef233c] fill-[#ef233c]" /> for humanity.
+              © {currentYear} BloodBridge Application. Made with <Heart size={12} className="text-[#ef233c] fill-[#ef233c]" /> for humanity.
             </p>
           </div>
         </div>

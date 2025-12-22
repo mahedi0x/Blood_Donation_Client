@@ -2,19 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useForm, useWatch } from "react-hook-form";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import { useLoaderData } from "react-router";
-import { Search, MapPin, Mail, User, Heart, Phone, X, PhoneCall } from "lucide-react";
+import { Search, MapPin, Mail, User, Heart, Phone, X, PhoneCall, Droplet, SmileIcon } from "lucide-react";
 import Loader from "../Components/Loader";
 
 const DonorSearch = () => {
     const axiosSecure = useAxiosSecure();
     const { register, handleSubmit, control } = useForm();
     
-    // State Management
     const [donors, setDonors] = useState([]);
     const [hasSearched, setHasSearched] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [upazilas, setUpazilas] = useState([]);
-    const [selectedDonor, setSelectedDonor] = useState(null); // For Popup
+    const [selectedDonor, setSelectedDonor] = useState(null); 
     const realData = useLoaderData();
 
     useEffect(() => {
@@ -61,11 +60,11 @@ const DonorSearch = () => {
 
             {/* --- Header --- */}
             <div className="max-w-4xl mx-auto text-center mb-12">
-                <h1 className="text-5xl md:text-6xl font-black text-gray-900 tracking-tighter mb-6">
+                <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter mb-6">
                     Find a <span className="text-[#ef233c]">Blood Donor</span>
                 </h1>
                 <p className="text-gray-500 text-lg md:text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-                    Connect with life-saving heroes in your area.
+                    Connecting heroes with those in need. Search by group and location.
                 </p>
             </div>
 
@@ -75,7 +74,7 @@ const DonorSearch = () => {
                     <form onSubmit={handleSubmit(onSearch)} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
                         <div className="space-y-3">
                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Blood Group</label>
-                            <select {...register("bloodGroup")} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all appearance-none cursor-pointer">
+                            <select {...register("bloodGroup")} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all cursor-pointer">
                                 <option value="">Select Group</option>
                                 {bloodGroups.map((group) => <option key={group} value={group}>{group}</option>)}
                             </select>
@@ -83,7 +82,7 @@ const DonorSearch = () => {
 
                         <div className="space-y-3">
                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">District</label>
-                            <select {...register("district", { required: true })} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all appearance-none cursor-pointer">
+                            <select {...register("district", { required: true })} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all cursor-pointer">
                                 <option value="">Select District</option>
                                 {realData.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
                             </select>
@@ -91,7 +90,7 @@ const DonorSearch = () => {
 
                         <div className="space-y-3">
                             <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Upazila</label>
-                            <select {...register("upazila", { required: true })} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all appearance-none cursor-pointer">
+                            <select {...register("upazila", { required: true })} className="w-full pl-6 pr-10 py-4 bg-gray-50 border border-transparent rounded-2xl font-bold text-gray-700 outline-none focus:bg-white focus:border-red-200 transition-all cursor-pointer">
                                 <option value="">Select Upazila</option>
                                 {upazilaByDistrictId(selectedDistrictId).map((u, i) => <option key={i} value={u}>{u}</option>)}
                             </select>
@@ -99,7 +98,7 @@ const DonorSearch = () => {
 
                         <button 
                             disabled={isLoading}
-                            className={`flex items-center justify-center gap-3 w-full bg-[#ef233c] text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-red-100 transition-all active:scale-95 group ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#d90429]'}`}
+                            className={`flex cursor-pointer items-center justify-center gap-3 w-full bg-[#ef233c] text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-red-100 transition-all active:scale-95 group ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#d90429]'}`}
                         >
                             <Search size={20} className={isLoading ? "animate-spin" : "group-hover:rotate-12 transition-transform"} />
                             {isLoading ? "Searching..." : "Search Donors"}
@@ -109,20 +108,44 @@ const DonorSearch = () => {
             </div>
 
             {/* --- Donors List --- */}
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-7xl mx-auto px-2">
                 {!isLoading && donors.length === 0 ? (
-                    <div className="text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-100 max-w-4xl mx-auto">
-                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-                            <Heart size={32} className="text-gray-300" />
+                    /* --- ANIMATED EMPTY STATE --- */
+                    <div className="text-center py-24 bg-white rounded-[3rem] border-2 border-dashed border-gray-100 max-w-4xl mx-auto overflow-hidden relative">
+                        <div className="absolute inset-0 bg-red-50/30 opacity-50 blur-3xl -z-10 animate-pulse"></div>
+                        <div className="relative">
+                            <div className="relative w-24 h-24 mx-auto mb-8">
+                                <div className="absolute inset-0 bg-[#ef233c] rounded-full opacity-20 animate-ping"></div>
+                                <div className="absolute inset-0 bg-[#ef233c] rounded-full opacity-10 animate-pulse scale-150"></div>
+                                <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-xl border border-red-50 z-10">
+                                    <div className="animate-bounce transition-all duration-1000">
+                                        <Droplet 
+                                            size={40} 
+                                            className={`${hasSearched ? "text-gray-300" : "text-[#ef233c]"} fill-current`} 
+                                        />
+                                    </div>
+                                </div>
+                                {!hasSearched && (
+                                    <>
+                                        <SmileIcon size={16} className="absolute -top-2 -right-2 text-[#ef233c] animate-bounce delay-100" fill="currentColor" />
+                                        <SmileIcon size={12} className="absolute top-4 -left-4 text-[#ef233c] opacity-40 animate-pulse delay-300" fill="currentColor" />
+                                    </>
+                                )}
+                            </div>
+                            <h3 className="text-3xl font-black text-gray-900 tracking-tighter mb-3">
+                                {hasSearched ? "No matching donors found" : "Ready to find a hero?"}
+                            </h3>
+                            <p className="text-gray-500 font-medium max-w-xs mx-auto leading-relaxed">
+                                {hasSearched 
+                                    ? "Try adjusting your filters or searching in a nearby district." 
+                                    : "Select a blood group and location to see available donors."}
+                            </p>
                         </div>
-                        <h3 className="text-2xl font-black text-gray-900 tracking-tight mb-2">
-                            {hasSearched ? "No matching donors found" : "Start your search"}
-                        </h3>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 ">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                         {donors.map((donor) => (
-                            <div key={donor._id} className="group bg-white shadow-2xl rounded-[2.5rem] border border-gray-50 p-8 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500">
+                            <div key={donor._id} className="group bg-white shadow-[0_15px_40px_rgba(0,0,0,0.03)] rounded-[2.5rem] border border-gray-50 p-8 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4">
                                 <div className="flex justify-center mb-6 relative">
                                     <div className="w-24 h-24 rounded-[2rem] bg-red-50 flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
                                         {donor.photoURL ? (
@@ -140,8 +163,7 @@ const DonorSearch = () => {
                                     <h3 className="text-xl font-black text-gray-900 tracking-tight leading-tight mb-1 truncate">
                                         {donor.displayName || donor.name}
                                     </h3>
-                                    {/* --- GENDER ADDED HERE --- */}
-                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">{donor.gender}</p>
+                                    <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em]">{donor.gender || "Donor"}</p>
                                 </div>
 
                                 <div className="space-y-4 mb-8">
@@ -167,10 +189,10 @@ const DonorSearch = () => {
 
                                 <button 
                                     onClick={() => setSelectedDonor(donor)}
-                                    className="w-full bg-green-700 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#ef233c] transition-all shadow-xl active:scale-95 group-hover:shadow-red-200"
+                                    className="w-full cursor-pointer bg-emerald-600 text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-[#ef233c] transition-all shadow-xl group-hover:shadow-red-200"
                                 >
                                     Contact Now
-                                    <Heart size={16} fill="red" className="animate-ping ms-5" />
+                                    <Heart size={16} fill="white" className="animate-pulse ms-2" />
                                 </button>
                             </div>
                         ))}
@@ -181,49 +203,34 @@ const DonorSearch = () => {
             {/* --- CONTACT POPUP MODAL --- */}
             {selectedDonor && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    {/* Backdrop */}
-                    <div 
-                        className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-                        onClick={() => setSelectedDonor(null)}
-                    ></div>
-                    
-                    {/* Modal Content */}
-                    <div className="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-                        <div className="absolute top-4 right-4">
-                            <button 
-                                onClick={() => setSelectedDonor(null)}
-                                className="p-2 hover:bg-gray-100 rounded-full text-gray-400 transition-colors"
-                            >
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedDonor(null)}></div>
+                    <div className="relative bg-white w-full max-w-sm rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in duration-300">
+                        <div className="absolute top-6 right-6">
+                            <button onClick={() => setSelectedDonor(null)} className="p-2 hover:bg-gray-100 rounded-full text-gray-400 transition-colors">
                                 <X size={24} />
                             </button>
                         </div>
-                        
-                        <div className="pt-10 pb-6 px-8 text-center">
-                            <div className="w-20 h-20 mx-auto bg-red-50 rounded-3xl flex items-center justify-center text-[#ef233c] mb-6">
-                                <Phone size={36} />
+                        <div className="pt-12 pb-8 px-8 text-center">
+                            <div className="w-20 h-20 mx-auto bg-red-50 rounded-3xl flex items-center justify-center text-[#ef233c] mb-6 shadow-inner">
+                                <PhoneCall size={36} />
                             </div>
                             <h2 className="text-2xl font-black text-gray-900 mb-1">Contact Donor</h2>
-                            <p className="text-gray-500 font-medium mb-6">Reach out to {selectedDonor.displayName}</p>
+                            <p className="text-gray-500 font-medium mb-8 uppercase text-[10px] tracking-widest">{selectedDonor.displayName}</p>
                             
-                            <div className="bg-gray-50 rounded-2xl p-4 mb-8 border border-gray-100">
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Phone Number</p>
-                                <p className="text-2xl font-black text-gray-800 tracking-tight">
-                                    {selectedDonor.phoneNumber}
+                            <div className="bg-gray-50 rounded-2xl p-6 mb-8 border border-gray-100">
+                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest mb-2">Verified Phone Number</p>
+                                <p className="text-3xl font-black text-gray-900 tracking-tighter">
+                                    {selectedDonor.phoneNumber || "Not Available"}
                                 </p>
                             </div>
 
                             <a 
                                 href={`tel:${selectedDonor.phoneNumber}`}
-                                className="flex items-center justify-center gap-3 w-full bg-[#ef233c] text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
+                                className="flex items-center justify-center gap-3 w-full bg-[#ef233c] text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-red-100 hover:bg-[#d90429] transition-all active:scale-95"
                             >
-                                <PhoneCall size={20} />
+                                <Phone size={20} />
                                 Call Now
                             </a>
-                        </div>
-                        <div className="bg-gray-50 py-4 text-center">
-                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter px-6">
-                                Please mention "LifeSave" when calling.
-                            </p>
                         </div>
                     </div>
                 </div>
